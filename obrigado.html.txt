@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seu Acesso Está Pronto — Saída das Bets</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #111111;
+            --red: #8B0000;
+            --red-bright: #CC0000;
+            --text: #e0e0e0;
+            --text-muted: #999999;
+            --white: #ffffff;
+            --border: #222222;
+            --green-bright: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 40px 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        h1 {
+            font-size: 22px;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            max-width: 320px;
+        }
+
+        .access-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .access-card h3 {
+            font-size: 16px;
+            color: var(--green-bright);
+            margin-bottom: 16px;
+        }
+
+        .access-link-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            word-break: break-all;
+            font-size: 13px;
+            color: var(--white);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .copy-btn {
+            background: var(--red-bright);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.96);
+            background: #aa0000;
+        }
+
+        .copy-btn.copied {
+            background: var(--green-bright);
+        }
+
+        .save-instruction {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: left;
+        }
+
+        .save-instruction strong {
+            color: var(--white);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .telegram-cta {
+            background: rgba(0, 136, 204, 0.15);
+            border: 1px solid rgba(0, 136, 204, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .telegram-cta a {
+            color: #0088cc;
+            font-weight: 700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="success-icon">🎉</div>
+
+        <h1>Você Está Pronto!</h1>
+        <p>Seu acesso ao programa está liberado. Salve o link abaixo ou adicione à tela inicial do seu celular.</p>
+
+        <div class="access-card">
+            <h3>🔗 Seu Link de Acesso</h3>
+            <div class="access-link-box" id="accessLink">https://seusite.com/app</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyLink()">📋 COPIAR MEU LINK</button>
+
+            <div class="save-instruction">
+                <strong>📱 Importante: Salve na Tela Inicial</strong>
+                iPhone: Toque em Compartilhar → "Adicionar à Tela de Início"<br>
+                Android: Toque nos 3 pontos → "Adicionar à Tela Inicial"
+            </div>
+        </div>
+
+        <div class="telegram-cta" id="telegramBox" style="display:none;">
+            <p style="margin-bottom:8px;">💬 Você também adquiriu a <strong>Comunidade Fechada</strong></p>
+            <a href="https://t.me/+K2jsHNAU6KgzMzlh">👉 Entrar no Grupo do Telegram</a>
+        </div>
+
+        <p style="font-size:12px;color:var(--text-muted);margin-top:20px;">
+            Qualquer dúvida, responda o e-mail de confirmação.
+        </p>
+
+    </div>
+
+    <script>
+        function copyLink() {
+            const linkText = document.getElementById('accessLink').innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerText = '✅ COPIADO!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = '📋 COPIAR MEU LINK';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Se veio com parâmetro de order bump, mostra o Telegram
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('bump') === 'sim') {
+            document.getElementById('telegramBox').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

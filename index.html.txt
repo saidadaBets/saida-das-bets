@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saída das Bets — Liberte-se das Apostas</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #111111;
+            --bg-card-hover: #1a1a1a;
+            --red: #8B0000;
+            --red-bright: #CC0000;
+            --text: #e0e0e0;
+            --text-muted: #999999;
+            --white: #ffffff;
+            --border: #222222;
+            --green: #1a3a1a;
+            --green-bright: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px 0 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--white);
+        }
+
+        .logo span {
+            color: var(--red-bright);
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 4px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid rgba(204, 0, 0, 0.3);
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero h1 .highlight {
+            color: var(--red-bright);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 2px;
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        /* Pain Points */
+        .pain-points {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .pain-points h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .pain-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .pain-item:last-child {
+            border-bottom: none;
+        }
+
+        .pain-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Solution Box */
+        .solution-box {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a0a0a 100%);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .solution-box h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .solution-box p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #cccccc;
+        }
+
+        .feature-item .feat-icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Price Section */
+        .price-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .old-price {
+            font-size: 16px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-bottom: 4px;
+        }
+
+        .current-price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -2px;
+        }
+
+        .current-price .currency {
+            font-size: 24px;
+            vertical-align: super;
+        }
+
+        .installments {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: var(--red-bright);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 30px rgba(204, 0, 0, 0.25);
+            animation: pulse 2s infinite;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .cta-button:active {
+            transform: scale(0.97);
+            background: #aa0000;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 30px rgba(204, 0, 0, 0.25); }
+            50% { box-shadow: 0 8px 50px rgba(204, 0, 0, 0.45); }
+        }
+
+        .cta-subtext {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .cta-subtext span {
+            color: var(--green-bright);
+        }
+
+        /* Guarantee */
+        .guarantee {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(26, 58, 26, 0.3);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #bbbbbb;
+        }
+
+        .guarantee-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            margin-bottom: 24px;
+        }
+
+        .testimonials h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-card .stars {
+            color: #f1c40f;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-card .text {
+            font-size: 14px;
+            color: #cccccc;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-card .name {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Urgency */
+        .urgency-box {
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px solid rgba(204, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .urgency-box .urgency-text {
+            font-size: 14px;
+            color: #ff6b6b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* What's Inside */
+        .whats-inside {
+            margin-bottom: 24px;
+        }
+
+        .whats-inside h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-number {
+            width: 36px;
+            height: 36px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+            color: var(--white);
+        }
+
+        .module-info h4 {
+            font-size: 14px;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+
+        .module-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Final CTA Area */
+        .final-cta {
+            text-align: center;
+            padding-top: 8px;
+        }
+
+        .final-cta .cta-button {
+            margin-bottom: 16px;
+        }
+
+        /* Sticky CTA (mobile) */
+        .sticky-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px 20px;
+            z-index: 100;
+            border-top: 1px solid var(--border);
+        }
+
+        .sticky-cta .cta-button {
+            margin-bottom: 0;
+            animation: none;
+            font-size: 16px;
+            padding: 14px;
+        }
+
+        .sticky-cta .price-mini {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .spacer {
+            height: 100px;
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .hero h1 {
+                font-size: 22px;
+            }
+            .current-price {
+                font-size: 40px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">SAÍDA <span>DAS</span> <span>BETS</span></div>
+            <div class="tagline">Programa de Libertação</div>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">⚡ Últimas Vagas</div>
+            <h1>Pare de <span class="highlight">Perder Dinheiro</span> e Recupere o Controle da Sua Vida</h1>
+            <p>Um programa completo para libertar sua mente das apostas e reconstruir sua vida financeira — direto no seu celular.</p>
+        </div>
+
+        <!-- Pain Points -->
+        <div class="pain-points">
+            <h3>Isso Te Persegue?</h3>
+            <div class="pain-item">
+                <span class="pain-icon">💸</span>
+                <span>Perdeu dinheiro que não podia perder e agora está desesperado</span>
+            </div>
+            <div class="pain-item">
+                <span class="pain-icon">😰</span>
+                <span>Ansiedade antes de dormir pensando nas dívidas</span>
+            </div>
+            <div class="pain-item">
+                <span class="pain-icon">🔄</span>
+                <span>Já tentou parar várias vezes e sempre volta</span>
+            </div>
+            <div class="pain-item">
+                <span class="pain-icon">🤐</span>
+                <span>Vergonha de contar pra família o tamanho do buraco</span>
+            </div>
+            <div class="pain-item">
+                <span class="pain-icon">😞</span>
+                <span>Sensação de que perdeu o controle da própria vida</span>
+            </div>
+        </div>
+
+        <!-- Solution -->
+        <div class="solution-box">
+            <h2>🎯 Existe Uma Saída</h2>
+            <p>O <strong>Saída das Bets</strong> é um programa digital completo que você acessa pelo celular, com método passo a passo para:</p>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feat-icon">🧠</span>
+                    Controlar impulsos
+                </div>
+                <div class="feature-item">
+                    <span class="feat-icon">🛡️</span>
+                    Bloquear recaídas
+                </div>
+                <div class="feature-item">
+                    <span class="feat-icon">📊</span>
+                    Reorganizar finanças
+                </div>
+                <div class="feature-item">
+                    <span class="feat-icon">☀️</span>
+                    Recuperar paz mental
+                </div>
+            </div>
+        </div>
+
+        <!-- What's Inside -->
+        <div class="whats-inside">
+            <h3>O Que Você Recebe</h3>
+            <div class="module-card">
+                <div class="module-number">1</div>
+                <div class="module-info">
+                    <h4>Choque de Realidade</h4>
+                    <p>Encare o tamanho real do problema sem se sabotar</p>
+                </div>
+            </div>
+            <div class="module-card">
+                <div class="module-number">2</div>
+                <div class="module-info">
+                    <h4>Controle de Impulso</h4>
+                    <p>Técnica prática para travar a mão na hora da aposta</p>
+                </div>
+            </div>
+            <div class="module-card">
+                <div class="module-number">3</div>
+                <div class="module-info">
+                    <h4>Gatilhos Emocionais</h4>
+                    <p>Identifique o que te leva a apostar e neutralize</p>
+                </div>
+            </div>
+            <div class="module-card">
+                <div class="module-number">4</div>
+                <div class="module-info">
+                    <h4>Kit Antirrecaída</h4>
+                    <p>Protocolo de emergência para momentos de fraqueza</p>
+                </div>
+            </div>
+            <div class="module-card">
+                <div class="module-number">5</div>
+                <div class="module-info">
+                    <h4>Checklist Diário (7 Dias)</h4>
+                    <p>Missões diárias para reconstruir sua rotina</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials">
+            <h3>Quem Já Saiu</h3>
+            <div class="testimonial-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <div class="text">"Estava devendo 8 mil. Segui o passo a passo e hoje faz 3 meses que não aposto. Minha esposa voltou a confiar em mim."</div>
+                <div class="name">— Marcos, 34 anos</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <div class="text">"O checklist diário salvou minha vida. Cada dia sem apostar virou uma vitória. Recomendo demais."</div>
+                <div class="name">— Ricardo, 27 anos</div>
+            </div>
+        </div>
+
+        <!-- Price -->
+        <div class="price-section">
+            <div class="old-price">De R$197 por</div>
+            <div class="current-price">
+                <span class="currency">R$</span>47
+            </div>
+            <div class="installments">à vista ou em até 12x</div>
+        </div>
+
+        <!-- Urgency -->
+        <div class="urgency-box">
+            <div class="urgency-text">⚠️ Preço promocional pode acabar a qualquer momento</div>
+        </div>
+
+        <!-- CTA -->
+        <a href="LINK_CHECKOUT_CAKTO_PRINCIPAL" class="cta-button">
+            🔒 QUERO SAIR DAS BETS AGORA
+        </a>
+        <div class="cta-subtext">
+            ✅ Pagamento seguro • Acesso imediato • <span>7 dias de garantia</span>
+        </div>
+
+        <!-- Guarantee -->
+        <div class="guarantee">
+            <span class="guarantee-icon">🛡️</span>
+            <span><strong>Garantia de 7 dias.</strong> Se o programa não te ajudar, devolvemos 100% do seu dinheiro. Sem perguntas.</span>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="final-cta">
+            <a href="https://pay.cakto.com.br/bwrhg86_890124" class="cta-button">
+                🔒 COMEÇAR MINHA LIBERTAÇÃO
+            </a>
+            <p style="font-size:12px;color:var(--text-muted);">Você não precisa viver assim. Existe saída.</p>
+        </div>
+
+        <div class="spacer"></div>
+
+    </div>
+
+    <!-- Sticky Bottom CTA -->
+    <div class="sticky-cta">
+        <a href="https://pay.cakto.com.br/bwrhg86_890124" class="cta-button">
+            🔒 QUERO SAIR DAS BETS — R$47
+        </a>
+        <div class="price-mini">Acesso imediato • Garantia de 7 dias</div>
+    </div>
+
+</body>
+</html>
