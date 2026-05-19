@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saída das Bets — Seu Programa</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #111111;
+            --red: #8B0000;
+            --red-bright: #CC0000;
+            --text: #e0e0e0;
+            --text-muted: #999999;
+            --white: #ffffff;
+            --border: #222222;
+            --green-bright: #2ecc71;
+            --gold: #d4a574;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .topbar .logo-small {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .topbar .logo-small span {
+            color: var(--red-bright);
+        }
+
+        .streak-badge {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--green-bright);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            padding: 20px 20px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--red-bright);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-screen .welcome-emoji {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .welcome-screen h1 {
+            font-size: 24px;
+            color: var(--white);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .welcome-screen p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--red-bright);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(204, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
+            background: #aa0000;
+        }
+
+        .btn-outline {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:active {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* Module Screen */
+        .module-screen {
+            padding: 20px;
+            display: none;
+        }
+
+        .module-screen.active {
+            display: block;
+        }
+
+        .module-header {
+            margin-bottom: 20px;
+        }
+
+        .module-badge {
+            display: inline-block;
+            background: rgba(139, 0, 0, 0.2);
+            color: #ff6b6b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+
+        .module-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .module-header .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .content-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content-block h3 {
+            font-size: 16px;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .content-block p {
+            font-size: 14px;
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        .content-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-block ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 14px;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-block ul li:last-child {
+            border-bottom: none;
+        }
+
+        .content-block ul li .bullet {
+            color: var(--red-bright);
+            font-weight: 700;
+        }
+
+        /* Checklist Diária */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .checklist li.completed {
+            border-color: rgba(46, 204, 113, 0.4);
+            background: rgba(46, 204, 113, 0.05);
+            color: var(--green-bright);
+            text-decoration: line-through;
+            text-decoration-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .checklist li.completed .checkbox {
+            background: var(--green-bright);
+            border-color: var(--green-bright);
+        }
+
+        .day-section {
+            margin-bottom: 24px;
+        }
+
+        .day-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .day-title .day-num {
+            background: var(--red);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--white);
+        }
+
+        /* SOS Button */
+        .sos-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(204, 0, 0, 0.4);
+            border-radius: 12px;
+            color: #ff6b6b;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .sos-button:active {
+            background: rgba(204, 0, 0, 0.1);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.97);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            padding: 8px 16px;
+        }
+
+        .nav-item.active {
+            color: var(--red-bright);
+        }
+
+        .nav-item .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--green-bright);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="logo-small">SAÍDA <span>DAS</span> <span>BETS</span></div>
+            <div class="streak-badge" id="streakBadge">🔥 0 dias limpo</div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Progresso do Programa</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- ==================== TELAS ==================== -->
+
+        <!-- TELA: Boas-vindas -->
+        <div class="welcome-screen active" id="screen-welcome">
+            <span class="welcome-emoji">🫡</span>
+            <h1>Você acabou de dar o passo mais importante.</h1>
+            <p>Agora é execução. Abaixo está seu programa completo. Faça um módulo por dia.</p>
+            <button class="btn-primary" onclick="goToModule('module1')">▶ COMEÇAR PROGRAMA</button>
+            <button class="btn-outline" onclick="goToChecklist()">📋 Ir para Checklist Diária</button>
+        </div>
+
+        <!-- TELA: Módulo 1 -->
+        <div class="module-screen" id="screen-module1">
+            <div class="module-header">
+                <div class="module-badge">Módulo 1</div>
+                <h2>🧨 Choque de Realidade</h2>
+                <p class="subtitle">Encare o tamanho real do problema sem se sabotar</p>
+            </div>
+            <div class="content-block">
+                <h3>📝 A Verdade Que Você Evita</h3>
+                <p>Você sabe exatamente quanto perdeu. Mas nunca colocou no papel. Seu cérebro foge desse número porque dói. E é exatamente por isso que você precisa encará-lo.</p>
+            </div>
+            <div class="content-block">
+                <h3>⚡ Exercício (Faça Agora)</h3>
+                <ul>
+                    <li><span class="bullet">1.</span> Pegue papel e caneta. SIM, físico.</li>
+                    <li><span class="bullet">2.</span> Escreva o valor total aproximado que perdeu.</li>
+                    <li><span class="bullet">3.</span> Escreva o que esse dinheiro pagaria (aluguel? dívidas?).</li>
+                    <li><span class="bullet">4.</span> Guarde esse papel. Ele é seu compromisso.</li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <h3>💡 Por Que Isso Funciona</h3>
+                <p>A negação mantém o ciclo. Quando você coloca no papel, seu cérebro registra como real. Esse desconforto é o combustível da mudança.</p>
+            </div>
+            <button class="btn-primary" onclick="completeModule('module1', 'module2')">✅ MARCAR COMO CONCLUÍDO</button>
+            <button class="btn-outline" onclick="goToChecklist()">📋 Ir para Checklist</button>
+        </div>
+
+        <!-- TELA: Módulo 2 -->
+        <div class="module-screen" id="screen-module2">
+            <div class="module-header">
+                <div class="module-badge">Módulo 2</div>
+                <h2>🛑 Controle de Impulso</h2>
+                <p class="subtitle">Técnica prática para travar a mão na hora da aposta</p>
+            </div>
+            <div class="content-block">
+                <h3>🧠 A Regra dos 5 Minutos</h3>
+                <p>Quando a vontade de apostar surgir, você NÃO vai lutar contra ela. Vai apenas adiar por 5 minutos. Diga a si mesmo: "Se em 5 minutos eu ainda quiser, eu vou."</p>
+                <p>Nesses 5 minutos, faça UMA das coisas abaixo:</p>
+            </div>
+            <div class="content-block">
+                <h3>🔄 Lista de Substituição (5 Minutos)</h3>
+                <ul>
+                    <li><span class="bullet">•</span> Lavar o rosto com água gelada</li>
+                    <li><span class="bullet">•</span> 20 flexões ou polichinelos</li>
+                    <li><span class="bullet">•</span> Escrever o que está sentindo (bloco de notas)</li>
+                    <li><span class="bullet">•</span> Olhar o papel do Módulo 1</li>
+                    <li><span class="bullet">•</span> Mandar mensagem para alguém (não sobre apostas)</li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <h3>💡 O Segredo</h3>
+                <p>O impulso dura em média 3 minutos. Depois disso, seu cérebro racional volta. Você não precisa vencer a vontade. Só precisa sobreviver a ela por 5 minutos.</p>
+            </div>
+            <button class="btn-primary" onclick="completeModule('module2', 'module3')">✅ MARCAR COMO CONCLUÍDO</button>
+            <button class="btn-outline" onclick="goToChecklist()">📋 Ir para Checklist</button>
+        </div>
+
+        <!-- TELA: Módulo 3 -->
+        <div class="module-screen" id="screen-module3">
+            <div class="module-header">
+                <div class="module-badge">Módulo 3</div>
+                <h2>🎯 Gatilhos Emocionais</h2>
+                <p class="subtitle">Identifique o que te leva a apostar e neutralize</p>
+            </div>
+            <div class="content-block">
+                <h3>🔍 Os 4 Gatilhos Mais Comuns</h3>
+                <ul>
+                    <li><span class="bullet">1.</span> <strong>Tédio:</strong> Aposta como "entretenimento"</li>
+                    <li><span class="bullet">2.</span> <strong>Ansiedade:</strong> Fuga de problemas reais</li>
+                    <li><span class="bullet">3.</span> <strong>Falso "dia de sorte":</strong> Ilusão de que "hoje vai"</li>
+                    <li><span class="bullet">4.</span> <strong>Desespero financeiro:</strong> Apostar pra "recuperar"</li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <h3>📝 Seu Mapa de Gatilhos</h3>
+                <p>Pegue papel e responda:</p>
+                <ul>
+                    <li><span class="bullet">•</span> Em que situação você mais aposta?</li>
+                    <li><span class="bullet">•</span> Que emoção vem ANTES da vontade?</li>
+                    <li><span class="bullet">•</span> O que você poderia fazer no lugar?</li>
+                </ul>
+            </div>
+            <button class="btn-primary" onclick="completeModule('module3', 'module4')">✅ MARCAR COMO CONCLUÍDO</button>
+            <button class="btn-outline" onclick="goToChecklist()">📋 Ir para Checklist</button>
+        </div>
+
+        <!-- TELA: Módulo 4 -->
+        <div class="module-screen" id="screen-module4">
+            <div class="module-header">
+                <div class="module-badge">Módulo 4</div>
+                <h2>🛡️ Kit Antirrecaída</h2>
+                <p class="subtitle">Protocolo de emergência para momentos de fraqueza</p>
+            </div>
+            <div class="content-block">
+                <h3>🚨 Protocolo de Emergência</h3>
+                <p>Se a vontade estiver MUITO forte:</p>
+                <ul>
+                    <li><span class="bullet">1.</span> <strong>Respire fundo 10 vezes</strong> (inspire 4s, segure 4s, solte 6s)</li>
+                    <li><span class="bullet">2.</span> <strong>Leia o papel do Módulo 1</strong> em voz alta</li>
+                    <li><span class="bullet">3.</span> <strong>Mande mensagem no grupo</strong> (Telegram)</li>
+                    <li><span class="bullet">4.</span> <strong>Bloqueie o acesso:</strong> delete apps de aposta AGORA</li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <h3>💡 Recaída Não é Fracasso</h3>
+                <p>Se acontecer, não se martirize. Isso alimenta o ciclo. Levante, volte ao Módulo 1 e continue. Cada dia limpo é uma vitória.</p>
+            </div>
+            <button class="btn-primary" onclick="completeModule('module4', 'checklist')">✅ MARCAR COMO CONCLUÍDO</button>
+        </div>
+
+        <!-- TELA: Checklist Diária -->
+        <div class="module-screen" id="screen-checklist">
+            <div class="module-header">
+                <div class="module-badge">Desafio 7 Dias</div>
+                <h2>📋 Checklist Diária</h2>
+                <p class="subtitle">Complete as missões de cada dia</p>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">1</span> Dia 1 — Compromisso</div>
+                <ul class="checklist" id="day1">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Li o papel com o valor que perdi</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Deletei apps de aposta do celular</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Contei pra 1 pessoa de confiança</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">2</span> Dia 2 — Substituição</div>
+                <ul class="checklist" id="day2">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Usei a Regra dos 5 Minutos 1x</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Fiz exercício físico (15 min)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Anotei 1 gatilho que senti hoje</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">3</span> Dia 3 — Consciência</div>
+                <ul class="checklist" id="day3">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Identifiquei meu pior gatilho</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Criei 1 plano de fuga pro gatilho</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Li o conteúdo do Módulo 3 de novo</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">4</span> Dia 4 — Reconstrução</div>
+                <ul class="checklist" id="day4">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Organizei 1 dívida (nem que seja olhar)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Anotei 3 coisas boas do dia</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Zero apostas hoje</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">5</span> Dia 5 — Força</div>
+                <ul class="checklist" id="day5">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Usei o Protocolo de Emergência 1x</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Falei com alguém do grupo Telegram</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Revisei meus gatilhos</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">6</span> Dia 6 — Clareza</div>
+                <ul class="checklist" id="day6">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Escrevi como me sinto vs. 7 dias atrás</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Planejei 1 meta financeira realista</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Zero apostas hoje</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">7</span> Dia 7 — Vitória</div>
+                <ul class="checklist" id="day7">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Completei todos os módulos</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Compartilhei no grupo: 1 aprendizado</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Me comprometi com mais 7 dias</li>
+                </ul>
+            </div>
+
+            <button class="sos-button" onclick="sosAlert()">🚨 PRECISO DE AJUDA URGENTE</button>
+        </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✅ Progresso salvo!</div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-modules" onclick="goToModule('module1')">
+            <span class="nav-icon">📚</span> Módulos
+        </button>
+        <button class="nav-item" id="nav-checklist" onclick="goToChecklist()">
+            <span class="nav-icon">✅</span> Checklist
+        </button>
+        <button class="nav-item" onclick="sosAlert()">
+            <span class="nav-icon">🆘</span> SOS
+        </button>
+    </div>
+
+    <script>
+        // Carregar progresso salvo
+        let completedModules = JSON.parse(localStorage.getItem('sb_modules') || '[]');
+        let checklistItems = JSON.parse(localStorage.getItem('sb_checklist') || '{}');
+        let streakDays = parseInt(localStorage.getItem('sb_streak') || '0');
+
+        function updateProgress() {
+            const totalModules = 4;
+            const done = completedModules.length;
+            const percent = Math.round((done / totalModules) * 100);
+            document.getElementById('progressPercent').innerText = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('streakBadge').innerHTML = '🔥 ' + streakDays + ' dias limpo';
+        }
+
+        function goToModule(name) {
+            document.querySelectorAll('.module-screen, .welcome-screen').forEach(s => s.classList.remove('active'));
+            const screen = document.getElementById('screen-' + name);
+            if (screen) screen.classList.add('active');
+            document.getElementById('screen-welcome').classList.remove('active');
+            updateNav(name);
+            window.scrollTo(0, 0);
+        }
+
+        function goToChecklist() {
+            document.querySelectorAll('.module-screen, .welcome-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-welcome').classList.remove('active');
+            document.getElementById('screen-checklist').classList.add('active');
+            document.getElementById('nav-modules').classList.remove('active');
+            document.getElementById('nav-checklist').classList.add('active');
+            loadChecklist();
+            window.scrollTo(0, 0);
+        }
+
+        function updateNav(current) {
+            if (current === 'checklist') {
+                document.getElementById('nav-modules').classList.remove('active');
+                document.getElementById('nav-checklist').classList.add('active');
+            } else {
+                document.getElementById('nav-modules').classList.add('active');
+                document.getElementById('nav-checklist').classList.remove('active');
+            }
+        }
+
+        function completeModule(currentModule, nextScreen) {
+            if (!completedModules.includes(currentModule)) {
+                completedModules.push(currentModule);
+                localStorage.setItem('sb_modules', JSON.stringify(completedModules));
+                streakDays = Math.max(streakDays, completedModules.length);
+                localStorage.setItem('sb_streak', streakDays);
+            }
+            updateProgress();
+            showToast('✅ Módulo concluído! Progresso salvo.');
+            setTimeout(() => {
+                if (nextScreen === 'checklist') {
+                    goToChecklist();
+                } else {
+                    goToModule(nextScreen);
+                }
+            }, 600);
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('completed');
+            saveChecklist();
+            updateChecklistProgress();
+        }
+
+        function saveChecklist() {
+            let data = {};
+            for (let d = 1; d <= 7; d++) {
+                let items = document.getElementById('day' + d).querySelectorAll('li');
+                data['day' + d] = [];
+                items.forEach(li => data['day' + d].push(li.classList.contains('completed')));
+            }
+            localStorage.setItem('sb_checklist', JSON.stringify(data));
+            showToast('✅ Checklist atualizada!');
+        }
+
+        function loadChecklist() {
+            for (let d = 1; d <= 7; d++) {
+                let items = document.getElementById('day' + d).querySelectorAll('li');
+                let saved = checklistItems['day' + d];
+                if (saved) {
+                    items.forEach((li, i) => {
+                        if (saved[i]) li.classList.add('completed');
+                        else li.classList.remove('completed');
+                    });
+                }
+            }
+        }
+
+        function updateChecklistProgress() {
+            let total = 0;
+            let done = 0;
+            for (let d = 1; d <= 7; d++) {
+                let items = document.getElementById('day' + d).querySelectorAll('li');
+                items.forEach(li => {
+                    total++;
+                    if (li.classList.contains('completed')) done++;
+                });
+            }
+            // Atualiza o streak baseado em dias completos
+            let daysComplete = 0;
+            for (let d = 1; d <= 7; d++) {
+                let items = document.getElementById('day' + d).querySelectorAll('li');
+                let allDone = true;
+                items.forEach(li => { if (!li.classList.contains('completed')) allDone = false; });
+                if (allDone) daysComplete++;
+            }
+            streakDays = Math.max(streakDays, daysComplete);
+            localStorage.setItem('sb_streak', streakDays);
+            updateProgress();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function sosAlert() {
+            alert('🚨 RESPIRA FUNDO.\n\n1. Pegue o papel do Módulo 1\n2. Leia em voz alta\n3. Vá para o grupo do Telegram\n4. Daqui 5 minutos a vontade vai passar.\n\nVocê não está sozinho.');
+        }
+
+        // Inicializar
+        updateProgress();
+        loadChecklist();
+        updateChecklistProgress();
+
+        // Mostrar welcome apenas se não tiver progresso
+        if (completedModules.length > 0) {
+            document.getElementById('screen-welcome').classList.remove('active');
+            goToModule('module1');
+        }
+    </script>
+</body>
+</html>

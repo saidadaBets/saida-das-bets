@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reconstrução Financeira — Saída das Bets</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #111111;
+            --red: #8B0000;
+            --red-bright: #CC0000;
+            --text: #e0e0e0;
+            --text-muted: #999999;
+            --white: #ffffff;
+            --border: #222222;
+            --green-bright: #2ecc71;
+            --gold: #d4a574;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        .topbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar .logo-small {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .topbar .logo-small span {
+            color: var(--gold);
+        }
+
+        .progress-section {
+            padding: 20px 20px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .module-screen {
+            padding: 20px;
+            display: none;
+        }
+
+        .module-screen.active {
+            display: block;
+        }
+
+        .module-header {
+            margin-bottom: 20px;
+        }
+
+        .module-badge {
+            display: inline-block;
+            background: rgba(212, 167, 116, 0.2);
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+
+        .module-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .module-header .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .content-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content-block h3 {
+            font-size: 16px;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .content-block p {
+            font-size: 14px;
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        .content-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-block ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 14px;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-block ul li:last-child {
+            border-bottom: none;
+        }
+
+        .content-block ul li .bullet {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .calculator-box {
+            background: rgba(212, 167, 116, 0.08);
+            border: 1px solid rgba(212, 167, 116, 0.3);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .calculator-box h3 {
+            color: var(--gold);
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .calc-input {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--white);
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .calc-result {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--gold);
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(212, 167, 116, 0.25);
+            margin-top: 10px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
+            background: #c49560;
+        }
+
+        .btn-outline {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:active {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .checklist li.completed {
+            border-color: rgba(212, 167, 116, 0.4);
+            background: rgba(212, 167, 116, 0.05);
+            color: var(--gold);
+            text-decoration: line-through;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .checklist li.completed .checkbox {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .day-section {
+            margin-bottom: 24px;
+        }
+
+        .day-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .day-num {
+            background: rgba(212, 167, 116, 0.3);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--gold);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.97);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 20px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            padding: 8px 16px;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-emoji {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .welcome-screen h1 {
+            font-size: 24px;
+            color: var(--white);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .welcome-screen p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="logo-small">💰 <span>RECONSTRUÇÃO</span> FINANCEIRA</div>
+            <span style="font-size:12px;color:var(--text-muted);">30 Dias</span>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Progresso Financeiro</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- TELA: Boas-vindas -->
+        <div class="welcome-screen active" id="screen-welcome">
+            <span class="welcome-emoji">📊</span>
+            <h1>Hora de Reconstruir</h1>
+            <p>Você já deu o passo mais difícil: parar. Agora vamos resolver o rombo. 30 dias. Um passo por vez.</p>
+            <button class="btn-primary" onclick="goToModule('calc')">🧮 COMEÇAR PELA CALCULADORA</button>
+            <button class="btn-outline" onclick="goToModule('planner')">📅 Ir para o Planner 30 Dias</button>
+        </div>
+
+        <!-- TELA: Calculadora -->
+        <div class="module-screen" id="screen-calc">
+            <div class="module-header">
+                <div class="module-badge">Ferramenta</div>
+                <h2>🧮 Calculadora de Recuperação</h2>
+                <p class="subtitle">Visualize o dinheiro que você vai recuperar</p>
+            </div>
+            <div class="calculator-box">
+                <h3>💰 Quanto você perdia por mês?</h3>
+                <input type="number" class="calc-input" id="monthlyLoss" placeholder="Ex: 500" oninput="calculate()">
+                <div class="calc-result" id="calcResult">R$ 0</div>
+                <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:6px;">Em 1 ano sem apostar</p>
+            </div>
+            <div class="content-block">
+                <h3>📝 O Que Fazer Com Esse Dinheiro</h3>
+                <ul>
+                    <li><span class="bullet">1.</span> Monte uma reserva de emergência</li>
+                    <li><span class="bullet">2.</span> Pague dívidas mais caras primeiro</li>
+                    <li><span class="bullet">3.</span> Invista em algo que te traga paz</li>
+                </ul>
+            </div>
+            <button class="btn-primary" onclick="completeModule('calc', 'planner')">✅ SALVAR E CONTINUAR</button>
+        </div>
+
+        <!-- TELA: Planner Financeiro 30 Dias -->
+        <div class="module-screen" id="screen-planner">
+            <div class="module-header">
+                <div class="module-badge">Planner 30 Dias</div>
+                <h2>📅 Reconstrução Diária</h2>
+                <p class="subtitle">Missões financeiras semana a semana</p>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">S1</span> Semana 1 — Diagnóstico</div>
+                <ul class="checklist" id="week1">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Liste TODAS as dívidas (nome, valor, juros)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Anote sua renda mensal real</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Cancele gastos desnecessários (streaming, etc)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Defina 1 meta financeira de 30 dias</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">S2</span> Semana 2 — Organização</div>
+                <ul class="checklist" id="week2">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Separe contas em: urgentes / médias / longas</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Negocie 1 dívida (contato com credor)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Crie uma planilha simples de gastos</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Defina um valor semanal para gastos</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">S3</span> Semana 3 — Ação</div>
+                <ul class="checklist" id="week3">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Pague a 1ª dívida (a menor, efeito bola de neve)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Guarde R$50 em reserva (nem que seja 10)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Revise seus gastos da semana</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Comemore 1 vitória financeira</li>
+                </ul>
+            </div>
+
+            <div class="day-section">
+                <div class="day-title"><span class="day-num">S4</span> Semana 4 — Consolidação</div>
+                <ul class="checklist" id="week4">
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Quite mais 1 dívida (ou faça acordo)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Aumente a reserva (meta: R$100)</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Planeje o orçamento do próximo mês</li>
+                    <li onclick="toggleCheck(this)"><span class="checkbox"></span> Escreva: "O que aprendi sobre dinheiro"</li>
+                </ul>
+            </div>
+
+            <button class="btn-primary" onclick="completeModule('planner', 'done')">✅ CONCLUIR PLANEJAMENTO</button>
+        </div>
+
+        <!-- TELA: Concluído -->
+        <div class="module-screen" id="screen-done">
+            <div class="welcome-screen">
+                <span class="welcome-emoji">🏆</span>
+                <h1>Você Reconstruiu!</h1>
+                <p>O caminho financeiro não termina aqui. Continue aplicando o que aprendeu. Cada mês sem apostar é um mês mais rico.</p>
+                <p style="font-size:12px;color:var(--text-muted);">Continue no grupo do Telegram para suporte contínuo.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✅ Progresso salvo!</div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <button class="nav-item" id="nav-calc" onclick="goToModule('calc')">
+            <span class="nav-icon">🧮</span> Calculadora
+        </button>
+        <button class="nav-item active" id="nav-planner" onclick="goToModule('planner')">
+            <span class="nav-icon">📅</span> Planner
+        </button>
+    </div>
+
+    <script>
+        let completedModules = JSON.parse(localStorage.getItem('sb_fin_modules') || '[]');
+        let checklistItems = JSON.parse(localStorage.getItem('sb_fin_checklist') || '{}');
+
+        function updateProgress() {
+            const totalModules = 2;
+            const done = completedModules.length;
+            const percent = Math.round((done / totalModules) * 100);
+            document.getElementById('progressPercent').innerText = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        function goToModule(name) {
+            document.querySelectorAll('.module-screen, .welcome-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-welcome').classList.remove('active');
+            const screen = document.getElementById('screen-' + name);
+            if (screen) screen.classList.add('active');
+            document.getElementById('nav-calc').classList.remove('active');
+            document.getElementById('nav-planner').classList.remove('active');
+            if (name === 'calc') document.getElementById('nav-calc').classList.add('active');
+            if (name === 'planner' || name === 'done') document.getElementById('nav-planner').classList.add('active');
+            window.scrollTo(0, 0);
+            if (name === 'planner') loadChecklist();
+        }
+
+        function completeModule(mod, next) {
+            if (!completedModules.includes(mod)) {
+                completedModules.push(mod);
+                localStorage.setItem('sb_fin_modules', JSON.stringify(completedModules));
+            }
+            updateProgress();
+            showToast('✅ Progresso salvo!');
+            setTimeout(() => goToModule(next), 500);
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('completed');
+            saveChecklist();
+        }
+
+        function saveChecklist() {
+            let data = {};
+            for (let w = 1; w <= 4; w++) {
+                let items = document.getElementById('week' + w).querySelectorAll('li');
+                data['week' + w] = [];
+                items.forEach(li => data['week' + w].push(li.classList.contains('completed')));
+            }
+            localStorage.setItem('sb_fin_checklist', JSON.stringify(data));
+            showToast('✅ Checklist atualizada!');
+        }
+
+        function loadChecklist() {
+            for (let w = 1; w <= 4; w++) {
+                let items = document.getElementById('week' + w).querySelectorAll('li');
+                let saved = checklistItems['week' + w];
+                if (saved) {
+                    items.forEach((li, i) => {
+                        if (saved[i]) li.classList.add('completed');
+                        else li.classList.remove('completed');
+                    });
+                }
+            }
+        }
+
+        function calculate() {
+            const val = parseFloat(document.getElementById('monthlyLoss').value) || 0;
+            const yearly = val * 12;
+            document.getElementById('calcResult').innerText = 'R$ ' + yearly.toLocaleString('pt-BR');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        updateProgress();
+        loadChecklist();
+        if (completedModules.length > 0) {
+            document.getElementById('screen-welcome').classList.remove('active');
+            goToModule('calc');
+        }
+    </script>
+</body>
+</html>
