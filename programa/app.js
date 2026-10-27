@@ -77,7 +77,7 @@
 
   // ---------- roteamento ----------
   function rota() {
-    var h = (location.hash || "#inicio").slice(1).split("/");
+    var h = (location.hash || "#inicio").slice(1).split(/[\/_]/);
     var nome = h[0] || "inicio", arg = h[1];
     if (!E.inicio && nome !== "comecar" && nome !== "progresso") nome = "comecar";
     var telas = { comecar: telaComecar, inicio: telaInicio, trilha: telaTrilha, dia: telaDia, ferramentas: telaFerramentas,
@@ -123,12 +123,12 @@
     var missaoFeitas = dado.missao.filter(function (_, i) { return E.checks["m" + d + "-" + i]; }).length;
     app.innerHTML = blocoContador() +
       '<a class="btn btn-vermelho" href="#vontade">⚡ Estou com vontade agora</a>' +
-      '<div class="linha-btn"><a class="btn btn-borda" href="#deslize">Tive um deslize</a><a class="btn btn-borda" href="#ferramenta/diario">Registrar no diário</a></div>' +
+      '<div class="linha-btn"><a class="btn btn-borda" href="#deslize">Tive um deslize</a><a class="btn btn-borda" href="#ferramenta_diario">Registrar no diário</a></div>' +
       '<div class="card" style="margin-top:12px"><span class="etiqueta">Fase ' + fase.id + ' · ' + esc(fase.nome) + '</span>' +
       '<h2>Dia ' + d + ': ' + esc(dado.titulo) + '</h2><p class="suave">' + esc(dado.subtitulo) + '</p>' +
       '<div class="barra" aria-label="Progresso do programa"><i style="width:' + pct + '%"></i></div>' +
       '<p class="peq suave">' + concluidos() + ' de ' + P.dias.length + ' dias concluídos · missão de hoje: ' + missaoFeitas + '/' + dado.missao.length + '</p>' +
-      '<a class="btn btn-vermelho" href="#dia/' + d + '">' + (E.diasConcluidos[d] ? "Rever o dia " : "Fazer o dia ") + d + '</a></div>' +
+      '<a class="btn btn-vermelho" href="#dia_' + d + '">' + (E.diasConcluidos[d] ? "Rever o dia " : "Fazer o dia ") + d + '</a></div>' +
       '<div class="card"><h3>Missão de hoje</h3>' + listaChecks(dado.missao, "m" + d + "-") + '</div>';
     ligarChecks();
   }
@@ -157,7 +157,7 @@
         return '<div class="card"><span class="etiqueta">Fase ' + f.id + '</span><h2>' + esc(f.nome) + '</h2><p class="peq suave">' + esc(f.resumo) + '</p><ul class="lista-dias">' +
           f.dias.map(function (n) {
             var d = P.dias[n - 1], feito = !!E.diasConcluidos[n];
-            return '<li><a href="#dia/' + n + '"><span class="bolinha' + (feito ? " feito" : n === atual ? " atual" : "") + '">' + (feito ? "✓" : n) + '</span>' +
+            return '<li><a href="#dia_' + n + '"><span class="bolinha' + (feito ? " feito" : n === atual ? " atual" : "") + '">' + (feito ? "✓" : n) + '</span>' +
               '<span><strong>' + esc(d.titulo) + '</strong><br><span class="peq suave">' + esc(d.subtitulo) + '</span></span></a></li>';
           }).join("") + '</ul></div>';
       }).join("");
@@ -187,7 +187,7 @@
     if (a.tipo === "ferramenta") {
       var nomes = { barreiras: "Checklist de barreiras", "plano-crise": "Plano de crise", diario: "Diário da vontade", dividas: "Organizador de dívidas", orcamento: "Orçamento de sobrevivência" };
       return '<div class="card"><h3>Ação de hoje: ' + nomes[a.ferramenta] + '</h3><p class="suave">Abra a ferramenta, preencha e volte para concluir o dia.</p>' +
-        '<a class="btn btn-borda" href="#ferramenta/' + a.ferramenta + '">Abrir ' + nomes[a.ferramenta].toLowerCase() + '</a></div>';
+        '<a class="btn btn-borda" href="#ferramenta_' + a.ferramenta + '">Abrir ' + nomes[a.ferramenta].toLowerCase() + '</a></div>';
     }
     return "";
   }
@@ -204,8 +204,8 @@
       '<div class="card texto-aula" style="margin-top:12px">' + d.texto + '</div>' + blocoAcao(d) +
       '<div class="card"><h3>Missão do dia</h3>' + listaChecks(d.missao, "m" + n + "-") + '</div>' +
       '<button class="btn ' + (feito ? "btn-borda" : "btn-verde") + '" id="concluir">' + (feito ? "✓ Dia concluído em " + fmtData(E.diasConcluidos[n]) + " (desfazer)" : "Concluir o dia " + n) + '</button>' +
-      '<div class="linha-btn">' + (n > 1 ? '<a class="btn btn-borda" href="#dia/' + (n - 1) + '">← Dia ' + (n - 1) + '</a>' : "<span></span>") +
-      (n < P.dias.length ? '<a class="btn btn-borda" href="#dia/' + (n + 1) + '">Dia ' + (n + 1) + ' →</a>' : "<span></span>") + '</div>';
+      '<div class="linha-btn">' + (n > 1 ? '<a class="btn btn-borda" href="#dia_' + (n - 1) + '">← Dia ' + (n - 1) + '</a>' : "<span></span>") +
+      (n < P.dias.length ? '<a class="btn btn-borda" href="#dia_' + (n + 1) + '">Dia ' + (n + 1) + ' →</a>' : "<span></span>") + '</div>';
     ligarChecks(); ligarRespostas();
     document.getElementById("concluir").onclick = function () {
       if (E.diasConcluidos[n]) { delete E.diasConcluidos[n]; salvar(); toast("Dia reaberto"); telaDia(n); return; }
@@ -219,7 +219,7 @@
       ["📓", "diario", "Diário da vontade", "Registre e veja seus padrões"], ["🚪", "barreiras", "Barreiras", "Feche o acesso às apostas"],
       ["💳", "dividas", "Dívidas", "Organize e escolha a ordem"], ["🧾", "orcamento", "Orçamento", "Quanto sobra no mês"]];
     app.innerHTML = '<h1>Ferramentas</h1><p class="suave">Use quando precisar, em qualquer dia do programa.</p><div class="grade-ferr">' +
-      itens.map(function (i) { return '<a href="' + (i[1] === "vontade-btn" ? "#vontade" : "#ferramenta/" + i[1]) + '"><span aria-hidden="true" style="font-size:24px">' + i[0] + '</span><strong>' + i[2] + '</strong><span class="peq suave">' + i[3] + '</span></a>'; }).join("") +
+      itens.map(function (i) { return '<a href="' + (i[1] === "vontade-btn" ? "#vontade" : "#ferramenta_" + i[1]) + '"><span aria-hidden="true" style="font-size:24px">' + i[0] + '</span><strong>' + i[2] + '</strong><span class="peq suave">' + i[3] + '</span></a>'; }).join("") +
       '</div><div class="card" style="margin-top:12px"><h3>Apoio imediato</h3><p class="peq suave">CVV 188 (gratuito), SUS 136, CAPS e grupos de apoio.</p><a class="btn btn-borda" href="/ajuda.html">Abrir página de apoio</a></div>';
   }
 
@@ -369,7 +369,7 @@
       '<div class="card destaque"><div class="relogio" id="v-relogio" aria-live="polite">5:00</div><div class="respira" id="v-respira"></div>' +
       '<button class="btn btn-vermelho" id="v-iniciar">Começar os 5 minutos</button></div>' +
       (p.frase ? '<div class="card"><span class="etiqueta">Sua frase</span><h2>“' + esc(p.frase) + '”</h2></div>' : "") +
-      '<div class="card"><h3>Faça agora</h3>' + (p.primeiro ? '<p style="white-space:pre-line">' + esc(p.primeiro) + '</p>' : '<p>1. Levante e saia do cômodo onde está. 2. Beba um copo d’água devagar. 3. Mande mensagem para alguém — sobre qualquer assunto.</p><p class="peq suave">Personalize em <a href="#ferramenta/plano-crise">Plano de crise</a>.</p>') + '</div>' +
+      '<div class="card"><h3>Faça agora</h3>' + (p.primeiro ? '<p style="white-space:pre-line">' + esc(p.primeiro) + '</p>' : '<p>1. Levante e saia do cômodo onde está. 2. Beba um copo d’água devagar. 3. Mande mensagem para alguém — sobre qualquer assunto.</p><p class="peq suave">Personalize em <a href="#ferramenta_plano-crise">Plano de crise</a>.</p>') + '</div>' +
       '<div class="card"><h3>Fale com alguém</h3>' + pessoas.map(function (x) { return x.tel ? '<a class="btn btn-borda" href="tel:' + esc(x.tel.replace(/[^\d+]/g, "")) + '">📞 ' + esc(x.nome || x.tel) + '</a>' : '<p>' + esc(x.nome) + '</p>'; }).join("") +
       '<a class="btn btn-borda" href="tel:188">📞 CVV — 188 (gratuito)</a></div>' +
       '<div class="card"><h3>Como foi?</h3>' + formDiario(false) + '<button class="btn btn-verde" id="v-registrar">Registrar e voltar</button></div>';
@@ -387,7 +387,7 @@
     };
     document.getElementById("v-registrar").onclick = function () {
       var r = lerFormDiario("vontade"); E.diario.push(r);
-      if (r.apostou) { registrarDeslize(hojeISO(), "Registrado após vontade"); salvar(); location.hash = "#deslize/registrado"; return; }
+      if (r.apostou) { registrarDeslize(hojeISO(), "Registrado após vontade"); salvar(); location.hash = "#deslize_registrado"; return; }
       salvar(); pararCronometro(); toast("Registrado. Mais uma vontade atravessada."); location.hash = "#inicio";
     };
   }
@@ -408,7 +408,7 @@
         '<label for="dz-nota">O que aconteceu antes? (opcional, só para você)</label><textarea id="dz-nota"></textarea>' +
         '<button class="btn btn-vermelho" id="dz-salvar">Registrar e seguir</button></div>') + plano +
       '<div class="card"><h3>Agora</h3><ol><li>Feche o site ou app e apague de novo.</li><li>Conte hoje para sua pessoa de confiança.</li><li>Amanhã, volte para o dia em que você parou no programa.</li></ol>' +
-      '<p class="peq suave">Se os deslizes estão se repetindo, isso não diz que você é fraco — diz que você precisa de mais apoio. Veja o <a href="#dia/19">Dia 19</a> ou a <a href="/ajuda.html">página de apoio</a>.</p></div>';
+      '<p class="peq suave">Se os deslizes estão se repetindo, isso não diz que você é fraco — diz que você precisa de mais apoio. Veja o <a href="#dia_19">Dia 19</a> ou a <a href="/ajuda.html">página de apoio</a>.</p></div>';
     var b = document.getElementById("dz-salvar");
     if (b) b.onclick = function () {
       var d = document.getElementById("dz-data").value || hojeISO();

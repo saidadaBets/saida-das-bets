@@ -3,6 +3,7 @@
   --vermelho: #cc0000; --vermelho-escuro: #8b0000; --texto: #e6e6e6; --suave: #a8a8a8;
   --branco: #fff; --verde: #2ecc71; --ouro: #d4a574; --azul: #5aa9ff;
   --raio: 14px;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
