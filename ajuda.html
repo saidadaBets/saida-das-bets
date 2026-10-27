@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apoio agora — Saída das Bets</title>
+<meta name="description" content="Apoio imediato para quem está com vontade de apostar ou em sofrimento: CVV 188, SUS, grupos de apoio e passos para os próximos 5 minutos.">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+  :root {
+    --bg: #0a0a0a; --bg-card: #111111; --border: #222222;
+    --red: #8B0000; --red-bright: #CC0000; --text: #e0e0e0; --muted: #a8a8a8;
+    --white: #ffffff; --green: #2ecc71; --gold: #d4a574;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px; line-height: 1.55;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px 16px 40px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0 16px; border-bottom: 1px solid var(--border); }
+  .brand { font-weight: 800; letter-spacing: .5px; color: var(--white); font-size: 15px; }
+  .brand span { color: var(--red-bright); }
+  .back { color: var(--muted); text-decoration: none; font-size: 14px; padding: 10px 4px; }
+  .back:hover, .back:focus-visible { color: var(--white); }
+  h1 { color: var(--white); font-size: 26px; line-height: 1.2; margin: 24px 0 6px; }
+  .lead { color: var(--muted); margin: 0 0 20px; }
+  h2 { color: var(--white); font-size: 18px; margin: 0 0 10px; }
+  section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 0 0 14px; }
+  section.crisis { border-color: var(--red-bright); background: #1a0606; }
+  p { margin: 0 0 10px; }
+  ol, ul { margin: 0 0 6px; padding-left: 22px; }
+  li { margin: 0 0 8px; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; min-height: 52px; padding: 12px 16px; margin: 10px 0 0;
+    border-radius: 12px; border: 0; font: inherit; font-weight: 700; font-size: 17px;
+    text-decoration: none; cursor: pointer; text-align: center;
+  }
+  .btn-red { background: var(--red-bright); color: var(--white); }
+  .btn-ghost { background: transparent; color: var(--white); border: 1px solid #444; }
+  .btn:focus-visible, .back:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .small { font-size: 14px; color: var(--muted); }
+  a { color: var(--gold); }
+  .timer { text-align: center; }
+  .clock { font-size: 48px; font-weight: 800; color: var(--white); font-variant-numeric: tabular-nums; margin: 6px 0 2px; }
+  .breath { min-height: 24px; color: var(--green); font-weight: 600; }
+  footer { margin-top: 24px; font-size: 13px; color: var(--muted); }
+  footer p { margin: 0 0 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">SAÍDA <span>DAS BETS</span></div>
+    <a class="back" href="/app.html">← Voltar ao programa</a>
+  </header>
+
+  <main>
+    <h1>Você não precisa passar por isso sozinho</h1>
+    <p class="lead">Escolha o que combina com o seu momento agora.</p>
+
+    <section class="crisis" aria-labelledby="crise">
+      <h2 id="crise">Pensando em tirar a própria vida ou em perigo agora?</h2>
+      <p>Ligue para o <strong>CVV — 188</strong>. A ligação é gratuita, de qualquer telefone, e você conversa com alguém treinado para ouvir, sem julgamento.</p>
+      <a class="btn btn-red" href="tel:188">📞 Ligar para o CVV (188)</a>
+      <p class="small" style="margin-top:10px">Prefere escrever? Há chat em <a href="https://cvv.org.br" target="_blank" rel="noopener">cvv.org.br</a>. Em risco imediato à vida, ligue <a href="tel:192">192 (SAMU)</a>.</p>
+    </section>
+
+    <section aria-labelledby="agora">
+      <h2 id="agora">A vontade de apostar está forte agora?</h2>
+      <p>Você não precisa vencer a vontade. Só precisa atravessar os próximos 5 minutos.</p>
+      <ol>
+        <li>Respire devagar: inspire em 4, segure em 4, solte em 6.</li>
+        <li>Leia em voz alta o papel do Módulo 1.</li>
+        <li>Saia do lugar onde você está, nem que seja para outro cômodo.</li>
+        <li>Mande mensagem para alguém de confiança — sobre qualquer assunto.</li>
+      </ol>
+      <div class="timer">
+        <div class="clock" id="clock" aria-live="polite">5:00</div>
+        <div class="breath" id="breath" aria-live="polite"></div>
+        <button class="btn btn-ghost" id="timerBtn" type="button">⏱️ Começar meus 5 minutos</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="falar">
+      <h2 id="falar">Fale com alguém</h2>
+      <ul>
+        <li><strong>Uma pessoa de confiança.</strong> Você não precisa contar tudo: “estou passando por um momento difícil” já basta.</li>
+        <li><strong>Se você participa da Comunidade do programa no Telegram</strong>, mande uma mensagem lá — outras pessoas estão no mesmo caminho.</li>
+        <li><strong>Jogadores Anônimos</strong> e o <strong>CVV</strong> também estão aqui para conversar, gratuitamente.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="profissional">
+      <h2 id="profissional">Ajuda profissional gratuita</h2>
+      <ul>
+        <li><strong>SUS:</strong> procure a UBS (posto de saúde) do seu bairro. A equipe pode encaminhar você ao CAPS, que atende casos de dependência, inclusive de jogos e apostas.</li>
+        <li><strong>Ouvidoria do SUS — 136:</strong> ajuda a localizar o serviço mais próximo.</li>
+        <li><strong>Jogadores Anônimos (JA):</strong> grupos de apoio gratuitos, presenciais e online, em várias cidades.</li>
+      </ul>
+      <a class="btn btn-ghost" href="tel:136">📞 Ligar 136 (SUS)</a>
+    </section>
+
+    <section aria-labelledby="bloquear">
+      <h2 id="bloquear">Feche o caminho</h2>
+      <ul>
+        <li>Apague apps e atalhos de apostas e saia de grupos que divulgam “sinais” ou “dicas”.</li>
+        <li>Desde 6/10/2026 as apostas de quota fixa estão proibidas no Brasil (MP 1.394/2026). Um site que ainda aceite apostas está operando de forma irregular — sem fiscalização e sem garantia de devolver seu dinheiro.</li>
+        <li>Deixe cartões e senhas do banco com alguém de confiança por um tempo, se isso fizer sentido para você.</li>
+      </ul>
+    </section>
+
+    <a class="btn btn-red" href="/app.html">Voltar ao programa</a>
+  </main>
+
+  <footer>
+    <p>O Saída das Bets é um programa educativo e não substitui o acompanhamento de profissionais de saúde.</p>
+    <p>Informações conferidas em 27/10/2026.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('timerBtn');
+  var clock = document.getElementById('clock');
+  var breath = document.getElementById('breath');
+  var total = 300, left = total, timer = null;
+  // ciclo de respiração 4-4-6 (14 s)
+  var phases = [[4, 'Inspire…'], [4, 'Segure…'], [6, 'Solte devagar…']];
+  function phaseAt(elapsed) {
+    var t = elapsed % 14;
+    for (var i = 0; i < phases.length; i++) { if (t < phases[i][0]) return phases[i][1]; t -= phases[i][0]; }
+    return '';
+  }
+  function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+  function stop(msg) {
+    clearInterval(timer); timer = null;
+    btn.textContent = '⏱️ Começar de novo';
+    breath.textContent = msg || '';
+  }
+  btn.addEventListener('click', function () {
+    if (timer) { stop(''); left = total; clock.textContent = fmt(left); return; }
+    left = total; clock.textContent = fmt(left); breath.textContent = phaseAt(0);
+    btn.textContent = '⏹️ Parar';
+    var start = Date.now();
+    timer = setInterval(function () {
+      var elapsed = Math.floor((Date.now() - start) / 1000);
+      left = Math.max(0, total - elapsed);
+      clock.textContent = fmt(left);
+      breath.textContent = phaseAt(elapsed);
+      if (left === 0) stop('Você atravessou 5 minutos. Isso conta. 💪');
+    }, 250);
+  });
+})();
+</script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
