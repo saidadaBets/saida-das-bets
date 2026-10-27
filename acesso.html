@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0a0a">
+<title>Seu acesso — Saída das Bets</title>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<style>
+:root { --bg:#0a0a0a; --card:#131313; --borda:#262626; --vermelho:#cc0000; --texto:#e6e6e6; --suave:#a8a8a8; --branco:#fff; --verde:#2ecc71; --ouro:#d4a574; color-scheme:dark; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--texto); font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+.wrap { max-width:520px; margin:0 auto; padding:24px 16px 48px; }
+.marca { font-weight:800; color:var(--branco); letter-spacing:.5px; font-size:15px; }
+.marca span { color:var(--vermelho); }
+h1 { color:var(--branco); font-size:28px; line-height:1.2; margin:22px 0 8px; }
+p { margin:0 0 12px; }
+.suave { color:var(--suave); }
+.card { background:var(--card); border:1px solid var(--borda); border-radius:14px; padding:18px; margin:0 0 12px; }
+.passos { margin:0; padding-left:20px; }
+.passos li { margin-bottom:8px; }
+.btn { display:flex; align-items:center; justify-content:center; width:100%; min-height:54px; margin-top:10px; border-radius:12px; border:0; font:inherit; font-weight:800; font-size:17px; text-decoration:none; cursor:pointer; }
+.btn-vermelho { background:var(--vermelho); color:var(--branco); }
+.btn-borda { background:transparent; color:var(--branco); border:1px solid #444; }
+.link { font-family:ui-monospace,monospace; font-size:14px; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px; word-break:break-all; color:var(--branco); }
+.btn:focus-visible, a:focus-visible { outline:3px solid var(--ouro); outline-offset:2px; }
+.peq { font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="marca">SAÍDA <span>DAS BETS</span></div>
+  <h1>Seu acesso está pronto</h1>
+  <p class="suave">Obrigado pela confiança. O programa abre no navegador do celular — não precisa instalar nada.</p>
+
+  <div class="card">
+    <a class="btn btn-vermelho" href="/programa/" id="abrir">Abrir meu programa agora</a>
+    <p class="peq suave" style="margin-top:12px">Seu link de acesso:</p>
+    <div class="link" id="link">https://saida-das-bets.vercel.app/programa/</div>
+    <button class="btn btn-borda" id="copiar" type="button">Copiar link</button>
+  </div>
+
+  <div class="card">
+    <h2 style="color:#fff;font-size:18px;margin:0 0 10px">Deixe a um toque de distância</h2>
+    <ol class="passos">
+      <li><strong>iPhone:</strong> abra o programa no Safari → botão Compartilhar → “Adicionar à Tela de Início”.</li>
+      <li><strong>Android:</strong> abra no Chrome → menu ⋮ → “Adicionar à tela inicial”.</li>
+    </ol>
+    <p class="peq suave">Assim o botão “Estou com vontade agora” fica sempre à mão.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="color:#fff;font-size:18px;margin:0 0 10px">Por onde começar</h2>
+    <ol class="passos">
+      <li>Marque a data do seu Dia 1.</li>
+      <li>Faça o Dia 1 hoje (10 a 15 minutos).</li>
+      <li>Monte seu plano de crise no Dia 3 — ou agora, em Ferramentas.</li>
+    </ol>
+  </div>
+
+  <div class="card peq">
+    <p><strong>Comprou também a Comunidade?</strong> O convite chega pelo e-mail e/ou WhatsApp da compra. Se não chegar em alguns minutos, responda o e-mail de confirmação.</p>
+    <p style="margin:0">Dúvidas sobre acesso: responda o e-mail de confirmação da compra.</p>
+  </div>
+
+  <p class="peq suave">O Saída das Bets é um programa educativo e não substitui o acompanhamento de profissionais de saúde. Em sofrimento intenso, ligue <a href="tel:188" style="color:var(--ouro)">188 (CVV)</a>, gratuito.</p>
+</div>
+<script>
+document.getElementById("copiar").onclick = function () {
+  var t = document.getElementById("link").textContent, b = this;
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = "✓ Link copiado"; }, function () {
+    var r = document.createRange(); r.selectNodeContents(document.getElementById("link")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Link selecionado — copie";
+  });
+};
+</script>
+</body>
+</html>

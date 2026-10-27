@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(app|obrigado|financeiro|upsell|downsell|oferta-v2)(\\.html)?",
+      "source": "/(app|obrigado|financeiro|upsell|downsell|oferta-v2|acesso)(\\.html)?",
       "headers": [
         {
           "key": "X-Robots-Tag",
