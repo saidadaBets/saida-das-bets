@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(app|obrigado|financeiro|upsell|downsell|oferta-v2|acesso)(\\.html)?",
+      "source": "/(financeiro|upsell|downsell|acesso)(\\.html)?",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -34,6 +34,33 @@
           "value": "DENY"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/oferta-v2.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/app.html",
+      "destination": "/programa/",
+      "permanent": false
+    },
+    {
+      "source": "/app",
+      "destination": "/programa/",
+      "permanent": false
+    },
+    {
+      "source": "/obrigado.html",
+      "destination": "/acesso.html",
+      "permanent": false
+    },
+    {
+      "source": "/obrigado",
+      "destination": "/acesso.html",
+      "permanent": false
     }
   ]
 }
