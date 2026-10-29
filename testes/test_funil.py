@@ -1,4 +1,4 @@
-"""Testes do funil consolidado: links da conta Cakto nova, caminho upsell → downsell → acesso,
+"""Testes do funil consolidado: links de checkout (Ticto; troca para a Cakto via ferramentas/ofertas.json), caminho upsell → downsell → acesso,
 redirecionamentos dos endereços antigos e ausência de referências pessoais ou da conta antiga."""
 import json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -6,14 +6,14 @@ R = []
 def check(n, c, d=""): R.append((n, bool(c), d))
 ler = lambda f: (ROOT / f).read_text(encoding="utf-8")
 NOVOS = {"principal": "https://payment.ticto.app/O7BD40B46",
-         "upsell": "https://pay.cakto.com.br/n9z58zp_1254653",
-         "downsell": "https://pay.cakto.com.br/bnqbdwe_1254677"}
+         "upsell": "https://payment.ticto.app/O26F548DE",
+         "downsell": "https://payment.ticto.app/OE5978616"}
 ANTIGOS = ["bwrhg86_890124", "g6bjfwk_890333", "b5q6xq2_891945"]
 paginas = [p for p in ROOT.rglob("*") if p.suffix in (".html", ".js") and "testes" not in p.parts]
 tudo = "\n".join(p.read_text(encoding="utf-8") for p in paginas)
 up, down = ler("upsell.html"), ler("downsell.html")
-check("Upsell aponta para o checkout novo do upsell", set(re.findall(r'https://pay\.cakto\.com\.br/\w+', up)) == {NOVOS["upsell"]})
-check("Downsell aponta para o checkout novo do downsell", set(re.findall(r'https://pay\.cakto\.com\.br/\w+', down)) == {NOVOS["downsell"]})
+check("Upsell aponta para o checkout novo do upsell", set(re.findall(r'https://(?:pay\.cakto\.com\.br|payment\.ticto\.app)/\w+', up)) == {NOVOS["upsell"]})
+check("Downsell aponta para o checkout novo do downsell", set(re.findall(r'https://(?:pay\.cakto\.com\.br|payment\.ticto\.app)/\w+', down)) == {NOVOS["downsell"]})
 check("Recusar o upsell leva ao downsell", 'href="/downsell.html"' in up)
 check("Recusar o downsell leva à página de acesso", 'href="/acesso.html"' in down)
 check("Nenhum link da conta Cakto antiga", not any(a in tudo for a in ANTIGOS))
