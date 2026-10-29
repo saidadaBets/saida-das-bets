@@ -5,7 +5,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 R = []
 def check(n, c, d=""): R.append((n, bool(c), d))
 ler = lambda f: (ROOT / f).read_text(encoding="utf-8")
-NOVOS = {"principal": "https://pay.cakto.com.br/yutpp9t_1254646",
+NOVOS = {"principal": "https://payment.ticto.app/O7BD40B46",
          "upsell": "https://pay.cakto.com.br/n9z58zp_1254653",
          "downsell": "https://pay.cakto.com.br/bnqbdwe_1254677"}
 ANTIGOS = ["bwrhg86_890124", "g6bjfwk_890333", "b5q6xq2_891945"]
